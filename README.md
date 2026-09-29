@@ -1,7 +1,7 @@
 Don't Log Bots [![Listed in Awesome YOURLS!](https://img.shields.io/badge/Awesome-YOURLS-C5A3BE)](https://github.com/YOURLS/awesome-yourls/)
 =============
 
-Plugin for [YOURLS](http://yourls.org) `1.6+`. 
+Plugin for [YOURLS](https://yourls.org) `1.10.*`, running on PHP `8.5`.
 
 Description
 -----------
@@ -22,7 +22,7 @@ _YOURLS - MIT License_
 More
 ----
 
-The list of bot user agent strings has been compiled from one of my own YOURLS setup: user-agents **looking like** bots with more than 100 hits. There is no reliable way to determine if a client is a bot or not.
+The list includes search crawlers, AI crawlers, and social-preview bots. It is based on user agents observed in YOURLS installations and public crawler identifiers. There is no reliable way to determine whether a client is a bot, and user agents can be spoofed.
 
 To check user agents on your own setup, you can try this query:
 

@@ -2,8 +2,10 @@
 /**
 Plugin Name: Don't Log Bots
 Plugin URI: https://github.com/YOURLS/dont-log-bots
-Description: Do not log some bots in stats
-Version: 1.3
+Description: Do not log bots in stats
+Version: 1.4
+Requires at least: YOURLS 1.10
+Requires PHP: 8.5
 Author: Ozh, Leo Colomb, Suguru Hirahara
 Author URI: http://yourls.org
 */
@@ -11,7 +13,9 @@ Author URI: http://yourls.org
 // No direct call
 if( !defined( 'YOURLS_ABSPATH' ) ) die();
 
-// Check current user-agent against a list of bots, return boolean
+/**
+ * Check the current user agent against known crawlers and preview bots.
+ */
 function yp_dlb_is_bot() {
     // Get current User-Agent (may be missing on CLI / some requests; strtolower(null) is deprecated in PHP 8.1+)
     if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
@@ -19,10 +23,10 @@ function yp_dlb_is_bot() {
     }
     $current = strtolower( (string) $_SERVER['HTTP_USER_AGENT'] );
 
-    // Array of known bot lowercase strings
+    // Known bot identifiers, all lowercase.
     // Example: 'googlebot' will match 'Googlebot/2.1 (+http://www.googlebot.com/bot.html)'
     $bots = array(
-        // List of Active crawlers & bots since October 2013 (imcomplete)
+        // Legacy list of active crawlers and bots, refreshed with current bots.
         // picked up from: http://user-agent-string.info/list-of-ua/bots
         // also: http://myip.ms/browse/web_bots/Known_Web_Bots_Web_Bots_2014_Web_Spider_List.html
         '200please.com/bot',
@@ -35,19 +39,23 @@ function yp_dlb_is_bot() {
         'addthis.com',
         'adressendeutschland.de',
         'adsbot-google',
+        'adsbot-google-mobile',
         'ahrefsbot',
         'aihitbot',
         'alexa site audit',
         'amznkassocbot',
+        'amazonbot',
         'analyticsseo.com',
         'antbot',
         'arabot',
+        'applebot',
         'archive.org_bot',
         'archive.orgbot',
         'askpeterbot',
         'backlinkcrawler',
         'baidu.com/search/spider.html',
         'baiduspider',
+        'baiduspider-render',
         'begunadvertising',
         'bingbot',
         'bingpreview',
@@ -60,24 +68,34 @@ function yp_dlb_is_bot() {
         'bubing',
         'butterfly',
         'bufferbot',
+        'bytespider',
         'careerbot',
         'catchbot',
         'ccbot',
         'cert figleafbot',
+        'chatgpt-user',
         'changedetection.com/bot.html',
         'chilkat',
         'claritybot',
+        'claudebot',
+        'claude-searchbot',
         'classbot',
         'cliqzbot',
         'cms crawler',
         'coccoc',
         'compspybot',
+        'cohere-ai',
         'crawler4j',        
         'crowsnest',
         'crystalsemanticsbot',
         'dataminr.com',
+        'dataforseo',
         'daumoa',
+        'deepseekbot',
+        'discordbot',
+        'duckassistbot',
         'easouspider',
+        'embedly',
         'exabot',
         'exb language crawler',
         'ezooms',
@@ -94,12 +112,17 @@ function yp_dlb_is_bot() {
         'gigabot',
         'google page speed insights',
         'googlebot',
+        'google-extended',
+        'google-inspectiontool',
+        'googleother',
+        'gptbot',
         'grapeshot',
         'hatena-useragent',
         'hubspot connect',
         'hubspot links crawler',
         'hosttracker.com',
         'ia_archiver',
+        'iframely',
         'icc-crawler',
         'ichiro',
         'immediatenet.com',
@@ -113,17 +136,22 @@ function yp_dlb_is_bot() {
         'jyxobot',
         'linkdex',
         'linkfluence',
+        'linkedinbot',
         'loadimpactpageanalyzer',
         'luminate.com',
         'lycosa',
         'magpie-crawler',
+        'mastodon',
         'mail.ru_bot',
         'meanpathbot',
         'mediapartners-google',
         'metageneratorcrawler',
         'metajobbot',
         'mj12bot',
+        'meta-externalagent',
+        'meta-externalfetcher',
         'mojeekbot',
+        'mistralai-user',
         'msai.in',
         'msnbot-media',
         'musobot',
@@ -135,9 +163,14 @@ function yp_dlb_is_bot() {
         'netseer crawler',
         'nuhk',
         'obot',
+        'oai-searchbot',
         'omgilibot',
         'openwebspider',
         'panscient.com',
+        'perplexitybot',
+        'petalbot',
+        'phindbot',
+        'pinterestbot',
         'parsijoo',
         'plukkie',
         'proximic',
@@ -146,6 +179,7 @@ function yp_dlb_is_bot() {
         'qualidator.com',
         'queryseekerspider',
         'readability',
+        'redditbot',
         'rogerbot',
         'sbsearch',
         'scrapy',
@@ -153,6 +187,7 @@ function yp_dlb_is_bot() {
         'searchbot',
         'searchmetricsbot',
         'semrushbot',
+        'serpstatbot',
         'seocheckbot',
         'seoengworldbot',
         'seokicks-robot',
@@ -161,6 +196,7 @@ function yp_dlb_is_bot() {
         'shopwiki.com/wiki/help:bot',
         'showyoubot',
         'sistrix',
+        'skypeuripreview',
         'sitechecker',
         'siteexplorer',
         'speedy spider',
@@ -171,6 +207,7 @@ function yp_dlb_is_bot() {
         'spbot',
         'special_archiver',
         'spiderling',
+        'slackbot-linkexpanding',
         'spinn3r',
         'spreadtrum',
         'steeler',
@@ -179,8 +216,10 @@ function yp_dlb_is_bot() {
         'suggybot',
         'svenska-webbsido',
         'teoma',
+        'telegrambot',
         'thumbshots',
         'tineye.com',
+        'tiktokspider',
         'trendiction.com',
         'trendiction.de/bot',
         'turnitinbot',
@@ -236,10 +275,14 @@ function yp_dlb_is_bot() {
         'xenu link sleuth',
     );
         
-    // Check if the current UA string contains a know bot string
-    $is_bot = ( str_replace( $bots, '', $current ) != $current );
-        
-    return $is_bot;
+    // Check whether the current UA contains one of the known identifiers.
+    foreach ( $bots as $bot ) {
+        if ( str_contains( $current, $bot ) ) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // Hook stuff in
@@ -247,7 +290,7 @@ yourls_add_filter( 'shunt_update_clicks', 'yp_dlb_skip_if_bot' );
 yourls_add_filter( 'shunt_log_redirect', 'yp_dlb_skip_if_bot' );
 
 // Skip if it's a bot
-function yp_dlb_skip_if_bot() {
-    return yp_dlb_is_bot();
+function yp_dlb_skip_if_bot( $pre = false ) {
+    return false !== $pre ? $pre : yp_dlb_is_bot();
     // if anything but false is returned, functions using the two shunt_* filters will be short-circuited
 }
